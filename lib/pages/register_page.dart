@@ -1,4 +1,7 @@
+import 'package:chat_app/helpers/show_alert.dart';
+import 'package:chat_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/widgets.dart';
 
@@ -38,7 +41,7 @@ class RegisterPage extends StatelessWidget {
 }
 
 class _Form extends StatefulWidget {
-  const _Form({super.key});
+  const _Form();
 
   @override
   State<_Form> createState() => __FormState();
@@ -52,6 +55,9 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+
+    final authService = Provider.of<AuthService>(context);
+
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 45),
@@ -81,11 +87,25 @@ class __FormState extends State<_Form> {
           ),
           
           CustomBtn(
-            text: 'Log in', 
-            onPressed: () {
+            text: 'Create account', 
+            onPressed: authService.authenticating ? () {} : () async {
+              print(nameController.text);
               print(emailController.text);
               print(passwordController.text);
-            },
+
+              final registerOk = await authService.register(nameController.text.trim(), emailController.text.trim(), passwordController.text.trim());
+
+              if (registerOk == true) {
+                //TODO: Conectar al socket sv
+                if (context.mounted) {
+                  Navigator.pushReplacementNamed(context, 'users');
+                }
+              } else {
+                if (context.mounted) {
+                  showAlert(context, 'Register Failed', registerOk['msg']);
+                }
+              }
+            }, 
           )
 
         ],

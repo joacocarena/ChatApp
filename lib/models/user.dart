@@ -1,13 +1,33 @@
-class User {
-  bool online;
-  String email;
-  String name;
-  String uid;
+import 'dart:convert';
 
-  User({
-    required this.online,
-    required this.email,
-    required this.name,
-    required this.uid
-  });
+User userFromJson(String str) => User.fromJson(json.decode(str));
+
+String userToJson(User data) => json.encode(data.toJson());
+
+class User {
+    String name;
+    String email;
+    bool online;
+    String uid;
+
+    User({
+        required this.name,
+        required this.email,
+        required this.online,
+        required this.uid,
+    });
+
+    factory User.fromJson(Map<String, dynamic> json) => User(
+        name: json["name"],
+        email: json["email"],
+        online: json["online"],
+        uid: json["uid"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "name": name,
+        "email": email,
+        "online": online,
+        "uid": uid,
+    };
 }

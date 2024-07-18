@@ -7,9 +7,13 @@ environment:
   sdk: '>=3.4.3 <4.0.0'
 
 dependencies:
+  animate_do: ^3.3.4
   cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
+  flutter_secure_storage: ^9.2.2
+  http: ^1.2.2
+  provider: ^6.1.2
   pull_to_refresh: ^2.0.0
 
 dev_dependencies:

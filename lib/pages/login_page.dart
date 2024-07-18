@@ -1,4 +1,7 @@
+import 'package:chat_app/helpers/show_alert.dart';
+import 'package:chat_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/widgets.dart';
 
@@ -21,7 +24,7 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Logo(title: 'Messenger'),
+                const Logo(title: 'Connections!'),
                 const _Form(),
                 const Labels(route: 'register', title: '¿Don\u0027t have an account?', subTitle: 'Create a new account'),
                 Container(
@@ -38,7 +41,7 @@ class LoginPage extends StatelessWidget {
 }
 
 class _Form extends StatefulWidget {
-  const _Form({super.key});
+  const _Form();
 
   @override
   State<_Form> createState() => __FormState();
@@ -51,6 +54,9 @@ class __FormState extends State<_Form> {
 
   @override
   Widget build(BuildContext context) {
+
+    final authService = Provider.of<AuthService>(context);
+
     return Container(
       margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(horizontal: 45),
@@ -74,9 +80,19 @@ class __FormState extends State<_Form> {
           
           CustomBtn(
             text: 'Log in', 
-            onPressed: () {
-              print(emailController.text);
-              print(passwordController.text);
+            onPressed: authService.authenticating ? () => {} : () async {
+              FocusScope.of(context).unfocus(); // ocultar teclado
+              final loginOk = await authService.login(emailController.text.trim(), passwordController.text.trim());
+
+              if (loginOk) {
+                if (context.mounted) {
+                  Navigator.pushReplacementNamed(context, 'users');
+                }
+              } else {
+                if (context.mounted) {
+                  showAlert(context, 'Login failed', 'Wrong credentials');
+                }
+              }
             },
           )
 
