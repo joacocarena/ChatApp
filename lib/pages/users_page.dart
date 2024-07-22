@@ -1,5 +1,6 @@
 import 'package:chat_app/models/user.dart';
 import 'package:chat_app/services/auth_service.dart';
+import 'package:chat_app/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -28,8 +29,10 @@ class _UsersPageState extends State<UsersPage> {
   Widget build(BuildContext context) {
 
     final authService = Provider.of<AuthService>(context);
-    final user = authService.user;
+    final socketService = Provider.of<SocketService>(context);
 
+    final user = authService.user;
+    print('Status dl sv: ${socketService.serverStatus}');
     return Scaffold(
       appBar: AppBar(
         title: Text(user?.name ?? 'No Name'),
@@ -38,7 +41,7 @@ class _UsersPageState extends State<UsersPage> {
         leading: IconButton(
           icon: const Icon(Icons.exit_to_app),
           onPressed: () {
-            //TODO: desconectar del socket sv
+            socketService.disconnect();
             Navigator.pushReplacementNamed(context, 'login');
             AuthService.deleteToken();
           },
@@ -46,7 +49,10 @@ class _UsersPageState extends State<UsersPage> {
         actions: [
           Container(
             margin: const EdgeInsets.only(right: 10),
-            child: Icon(Icons.check_circle, color: Colors.blue[400]),
+            //child: Icon(Icons.check_circle, color: Colors.blue[400]),
+            child: socketService.serverStatus == ServerStatus.Online
+            ? Icon(Icons.check_circle, color: Colors.blue[400])
+            : const Icon(Icons.offline_bolt, color: Colors.red)
           )
         ],
       ),
