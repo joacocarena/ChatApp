@@ -26,10 +26,10 @@ class SocketService with ChangeNotifier {
   void connect() {
     
     // Dart client
-    _socket = IO.io(Environment.socketUrl, { //? Uso como URL el path dado en Environment
+    _socket = IO.io(Environment.socketUrl, {
       'transports': ['websocket'],
       'autoConnect': true,
-      'forceNew': true //? hace que cada vez que se conecta un user genera una nueva instancia del Socket SV (genera un nuevo cliente)
+      'forceNew': true
     });
 
     _socket.on('connect', (_) {
@@ -45,7 +45,7 @@ class SocketService with ChangeNotifier {
   }
 
   void disconnect() {
-    _socket.disconnect(); //? me desconecto del SV (para el logout)
+    _socket.disconnect();
   }
 
 }
